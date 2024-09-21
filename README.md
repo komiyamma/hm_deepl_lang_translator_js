@@ -1,0 +1,2 @@
+# hm_deepl_lang_translator_js
+DeepL を使っての日⇔英翻訳。このjsでの実装が今後の本筋になるであろうからこれだけ分離
