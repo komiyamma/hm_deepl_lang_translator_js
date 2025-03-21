@@ -1,8 +1,8 @@
-﻿// HmDeepLLangTranslator.mac v1.2.1.5
-// Copyright (c) 2023-2024 Akitsugu Komiyama
+﻿// HmDeepLLangTranslator.mac v1.2.1.6
+// Copyright (c) 2023-2025 Akitsugu Komiyama
 // under the MIT License
 
-hidemaruversion "9.25.99";
+hidemaruversion "9.35.99";
 
 jsmode @"WebView2\HmDeepLLangTranslatorJS";
 
@@ -137,22 +137,22 @@ async function recieveFetchReply(data) {
     try {
         translate_obj = data;
 
-        let peRetry = hidemaru.setInterval(() => {
+        let isScheduled = 0;
+        function attemptExecution() {
+            if (!isScheduled) {
+                isScheduled = hidemaru.postExecMacroMemory("js{ printTranslateText(); }");
+            }
+            if (!isScheduled) {
+                hidemaru.setTimeout(attemptExecution, 100); // 100ミリ秒後に再度実行を試みる
+            }
+        }
 
-            // マクロ実行中ならばちょっとまつ、
-            if (hidemaru.isMacroExecuting()) return; // 再挑戦
-
-            let isScheduled = hidemaru.postExecMacroMemory("js{ printTranslateText(); }");
-            if (isScheduled === 0) return; // 再挑戦。postExecMacroMemoryの新旧仕様の揺れのため、「===」が必須。
-
-            hidemaru.clearInterval(peRetry);
-        }, 100);
+        hidemaru.setTimeout(attemptExecution, 0); // まずは0ディレイで実行を試みる
 
     } catch (error) {
         writeLineOutputPane("翻訳エラー:" + error);
     }
 }
-
 // エラーなどをアプトプット枠に表示する用途
 function writeLineOutputPane(msg) {
     let dll = loaddll("HmOutputPane.dll");
