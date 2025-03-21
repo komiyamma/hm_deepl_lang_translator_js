@@ -1,4 +1,4 @@
-﻿// HmDeepLLangTranslator.mac v1.2.1.6
+﻿// HmDeepLLangTranslator.mac v1.2.1.7
 // Copyright (c) 2023-2025 Akitsugu Komiyama
 // under the MIT License
 
@@ -133,6 +133,10 @@ function requestTranslate(params) {
 
 }
 
+var timeOutHandler;
+if (timeOutHandler) {
+    hidemaru.clearTimeout(timeOutHandler);
+}
 async function recieveFetchReply(data) {
     try {
         translate_obj = data;
@@ -143,11 +147,11 @@ async function recieveFetchReply(data) {
                 isScheduled = hidemaru.postExecMacroMemory("js{ printTranslateText(); }");
             }
             if (!isScheduled) {
-                hidemaru.setTimeout(attemptExecution, 100); // 100ミリ秒後に再度実行を試みる
+                timeOutHandler = hidemaru.setTimeout(attemptExecution, 100); // 100ミリ秒後に再度実行を試みる
             }
         }
 
-        hidemaru.setTimeout(attemptExecution, 0); // まずは0ディレイで実行を試みる
+        timeOutHandler = hidemaru.setTimeout(attemptExecution, 0); // まずは0ディレイで実行を試みる
 
     } catch (error) {
         writeLineOutputPane("翻訳エラー:" + error);
