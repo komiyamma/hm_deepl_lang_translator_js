@@ -1,4 +1,4 @@
-﻿// HmDeepLLangTranslator.mac v1.2.1.7
+﻿// HmDeepLLangTranslator.mac v1.3.0.1
 // Copyright (c) 2023-2025 Akitsugu Komiyama
 // under the MIT License
 
@@ -8,8 +8,6 @@ jsmode @"WebView2\HmDeepLLangTranslatorJS";
 
 js {
 
-
-
 // ご自身で環境変数「DEEPL_SCRIPT_TRANSLATION」にDeepLのAPIのAUTH_KEYを設定してください。
 let auth_key = getenv("DEEPL_SCRIPT_TRANSLATION");
 
@@ -18,9 +16,6 @@ let auth_key = getenv("DEEPL_SCRIPT_TRANSLATION");
 
 // 翻訳対象のテキスト
 let text = hidemaru.getSelectedText() || hidemaru.getTotalText();
-
-// 有料版の人は https://api.deepl.com/v2/translate と書き換えると無料の制限が無くなる
-let endpoint_url = "https://api-free.deepl.com/v2/translate";
 
 let source_lang = getarg(0);
 let target_lang = getarg(1);
@@ -33,31 +28,25 @@ if(!source_lang && !target_lang) {
     );
 }
 
-const params = new URLSearchParams({
+const params = {
     auth_key,
     text,
     source_lang,
     target_lang
-});
+};
 
 // マクロ実行から翻訳結果が返ってくるまでの間に時間的なずれがあり、その間編集ペインはフリーであるため、選択中だったかを記憶しておく
 // これにより翻訳マクロを実行した直後、まだ翻訳結果が返っていていないのにカーソルを動作させても良い形となり、ストレスがかなり軽減できる
 const [is_last_selecting, n_seltopcolumn, n_selendcolumn, n_selendlineno, n_linelen2] = [selecting(), seltopcolumn(), selendcolumn(), selendlineno(), linelen2()];
 
-var translate_obj = {};
+var translate_text;
 function getAnswerText() {
     try {
-        // エラーが出る可能性があるため、先頭でローカルに代入してみる
-        let answer = translate_obj["translations"][0]["text"];
-        return answer
+        return translate_text.toString()
     } catch (error) {
-        if (translate_obj.message != null) {
-            writeLineOutputPane("翻訳エラー:" + translate_obj.message);
-        } else {
-            writeLineOutputPane("翻訳エラー:" + error);
-        }
+        return translate_text.toString()
     } finally {
-        translate_obj = {};
+        translate_text = "";
     }
 }
 
@@ -115,31 +104,35 @@ function printTranslateText() {
     } catch (error) {
         writeLineOutputPane("翻訳エラー:" + error);
     } finally {
-        translate_obj = {};
+        translate_text = "";
     }
 }
 
-function requestTranslate(params) {
-    fetch(endpoint_url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: String(params),
-    })
-        .then(response => response.json())
-        .then(json_data => recieveFetchReply(json_data))
-        .catch(error => writeLineOutputPane('通信エラー:' + error));
+var processInfo;
+processInfo?.kill();
 
+function requestTranslate(params) {
+    processInfo = hidemaru.runProcess(`node "HmDeepLLangTranslator_nodejs.js" "${params.auth_key}" "${params.source_lang}" "${params.target_lang}"`, currentmacrodirectory(), "stdio", "utf8");
+    var stdIn = processInfo.stdIn;
+    stdIn.write(text);
+    stdIn.close();
+    var stdOut = processInfo.stdOut;
+    stdOut.onReadAll( onRecieveAnswer );
+    var stdErr = processInfo.stdErr;
+    stdErr.onReadAll( onRecieveAnswer );
 }
 
 var timeOutHandler;
 if (timeOutHandler) {
     hidemaru.clearTimeout(timeOutHandler);
 }
-async function recieveFetchReply(data) {
+
+function onRecieveAnswer(text) {
     try {
-        translate_obj = data;
+        if (text.endsWith("\n")) {
+            text = text.substring(0, text.length-1);
+        }
+        translate_text = text;
 
         let isScheduled = 0;
         function attemptExecution() {
@@ -147,7 +140,7 @@ async function recieveFetchReply(data) {
                 isScheduled = hidemaru.postExecMacroMemory("js{ printTranslateText(); }");
             }
             if (!isScheduled) {
-                timeOutHandler = hidemaru.setTimeout(attemptExecution, 100); // 100ミリ秒後に再度実行を試みる
+                timeOutHandler = hidemaru.setTimeout(attemptExecution, 200); // 200ミリ秒後に再度実行を試みる
             }
         }
 

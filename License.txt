@@ -1,6 +1,6 @@
 - HmDeepLLangTranslatorJS
 
-   Copyright (C) 2023-2024 Akitsugu Komiyama
+   Copyright (C) 2023-2025 Akitsugu Komiyama
 
    The MIT License (MIT)
    
