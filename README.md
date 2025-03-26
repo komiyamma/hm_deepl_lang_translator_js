@@ -6,4 +6,15 @@
 
 「DeepL API Free」というずっと無料の翻訳APIを利用して、英語を日本語に、日本語を英語にする
 
+要: nodejs
+
+**HmDeepLLangTranslator_node.js があるフォルダ**で、
+
+```cmd
+npm install deepl-node
+```
+
+を実行して、deepl-nodeをインストール必要。
+(globalにインストールしないでください)
+
 https://秀丸マクロ.net/?page=nobu_tool_hm_deepl_lang_translator_js
