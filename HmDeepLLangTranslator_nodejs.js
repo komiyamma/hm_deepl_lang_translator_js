@@ -5,23 +5,23 @@ const authKey = process.argv[2] || ''; // 認証キー
 const sourceLang = process.argv[3] || ''; // 翻訳元の言語
 const targetLang = process.argv[4] || ''; // 翻訳先の言語
 
+process.stdin.setEncoding('utf8');
+process.stderr.setEncoding('utf8');
+
 if (!authKey) {
-    console.error('エラー: 認証キーが指定されていません。');
-    console.error('例: node HmDeepLLangTranslate_nodejs.js YOUR_AUTH_KEY ja en-US');
+    process.stderr.write('エラー: 認証キーが指定されていません。');
     process.exit(1); // エラー終了
 }
 if (!sourceLang) {
-    console.error('エラー: 翻訳元の言語が指定されていません。');
+    process.stderr.write('エラー: 翻訳元の言語が指定されていません。');
     process.exit(1); // エラー終了
 }
 if (!targetLang) {
-    console.error('エラー: 翻訳先の言語が指定されていません。');
+    process.stderr.write('エラー: 翻訳先の言語が指定されていません。');
     process.exit(1); // エラー終了
 }
 
 let inputText = '';
-
-process.stdin.setEncoding('utf8'); // エンコーディングを設定 (重要)
 
 process.stdin.on('data', (chunk) => {
     inputText += chunk; // データを受け取るたびに蓄積
@@ -32,15 +32,15 @@ process.stdin.on('end', () => {
 });
 
 process.stdin.on('error', (err) => {
-    console.error('入力データのエラー:', err);
+    process.stderr.write('入力データのエラー:', err);
 });
 
 async function translate(text) {
     const translator = new deepl.Translator(authKey);
     try {
         const result = await translator.translateText(text, sourceLang, targetLang);
-        console.log(result.text);
+        process.stdout.write(result.text);
     } catch (error) {
-        console.error('翻訳中にエラーが発生しました:', error);
+        process.stderr.write('翻訳中にエラーが発生しました:' + error);
     }
 }

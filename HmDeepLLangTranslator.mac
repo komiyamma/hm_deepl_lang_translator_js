@@ -125,7 +125,7 @@ function requestTranslate(params) {
     var stdOut = processInfo.stdOut;
     stdOut.onReadAll( onRecieveAnswer );
     var stdErr = processInfo.stdErr;
-    stdErr.onReadAll( onRecieveAnswer );
+    stdErr.onReadAll( onRecieveError );
 }
 
 var timeOutHandler;
@@ -135,9 +135,6 @@ if (timeOutHandler) {
 
 function onRecieveAnswer(text) {
     try {
-        if (text.endsWith("\n")) {
-            text = text.substring(0, text.length-1);
-        }
         translate_text = text;
 
         let isScheduled = 0;
@@ -156,9 +153,16 @@ function onRecieveAnswer(text) {
         writeLineOutputPane("翻訳エラー:" + error);
     }
 }
+
+function onRecieveError(text) {
+    writeLineOutputPane(text);
+}
+
 // エラーなどをアプトプット枠に表示する用途
 function writeLineOutputPane(msg) {
     let dll = loaddll("HmOutputPane.dll");
+    msg = msg.replaceAll("\r\n", "\r");
+    msg = msg.replaceAll("\n", "\r\n");
     dll.dllFuncW.OutputW(hidemaru.getCurrentWindowHandle(), msg + "\r\n");
 }
 
