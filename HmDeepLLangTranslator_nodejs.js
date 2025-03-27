@@ -35,6 +35,7 @@ process.stdin.on('end', () => {
 
 process.stdin.on('error', (err) => {
     process.stderr.write('入力データのエラー:', err);
+    process.exit(1); // エラー終了
 });
 
 async function translate(text) {
@@ -42,7 +43,9 @@ async function translate(text) {
     try {
         const result = await translator.translateText(text, sourceLang, targetLang);
         process.stdout.write(result.text);
+        process.exit(0); // エラー終了
     } catch (error) {
         process.stderr.write('翻訳中にエラーが発生しました:' + error);
+        process.exit(1); // エラー終了
     }
 }
