@@ -4,11 +4,11 @@
 
 hidemaruversion "9.35.99";
 
-jsmode @"WebView2\HmDeepLLangTranslatorJS";
+jsmode @"WebView2\HmDeepLLangTranslator";
 
 js {
 
-let command = "node"; // node か python を選ぶ
+let command = "python"; // node か python を選ぶ
 
 // ご自身で環境変数「DEEPL_SCRIPT_TRANSLATION」にDeepLのAPIのAUTH_KEYを設定してください。
 let auth_key = getenv("DEEPL_SCRIPT_TRANSLATION");

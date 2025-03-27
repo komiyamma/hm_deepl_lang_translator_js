@@ -1,3 +1,5 @@
+// HmDeepLLangTranslator_nodejs.js v1.3.0.1
+
 const deepl = require('deepl-node');
 
 // コマンドライン引数からパラメータを取得。存在しない場合はデフォルト値を設定

@@ -1,7 +1,8 @@
+# HmDeepLLangTranslator_python.py v1.3.0.1
+
 import sys
 import io
 import deepl
-
 
 # 標準入出力のエンコーディングをUTF-8に設定
 sys.stdin = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
