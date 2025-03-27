@@ -10,11 +10,11 @@ if (!authKey) {
     console.error('例: node HmDeepLLangTranslate_nodejs.js YOUR_AUTH_KEY ja en-US');
     process.exit(1); // エラー終了
 }
-if (!targetLang) {
+if (!sourceLang) {
     console.error('エラー: 翻訳元の言語が指定されていません。');
     process.exit(1); // エラー終了
 }
-if (!sourceLang) {
+if (!targetLang) {
     console.error('エラー: 翻訳先の言語が指定されていません。');
     process.exit(1); // エラー終了
 }

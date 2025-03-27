@@ -6,7 +6,13 @@
 
 「DeepL API Free」というずっと無料の翻訳APIを利用して、英語を日本語に、日本語を英語にする
 
-要: nodejs
+## python で対処する場合
+
+```cmd
+python -m pip install deepl
+```
+
+## node.js で対処する場合
 
 **HmDeepLLangTranslator_node.js があるフォルダ**で、
 

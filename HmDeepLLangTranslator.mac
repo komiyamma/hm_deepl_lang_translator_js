@@ -8,6 +8,8 @@ jsmode @"WebView2\HmDeepLLangTranslatorJS";
 
 js {
 
+let command = "node"; // node か python を選ぶ
+
 // ご自身で環境変数「DEEPL_SCRIPT_TRANSLATION」にDeepLのAPIのAUTH_KEYを設定してください。
 let auth_key = getenv("DEEPL_SCRIPT_TRANSLATION");
 
@@ -112,7 +114,11 @@ var processInfo;
 processInfo?.kill();
 
 function requestTranslate(params) {
-    processInfo = hidemaru.runProcess(`node "HmDeepLLangTranslator_nodejs.js" "${params.auth_key}" "${params.source_lang}" "${params.target_lang}"`, currentmacrodirectory(), "stdio", "utf8");
+    if (command == "node") {
+        processInfo = hidemaru.runProcess(`node.exe "HmDeepLLangTranslator_nodejs.js" "${params.auth_key}" "${params.source_lang}" "${params.target_lang}"`, currentmacrodirectory(), "stdio", "utf8");
+    } else if (command == "python") {
+        processInfo = hidemaru.runProcess(`python.exe "HmDeepLLangTranslator_python.py" "${params.auth_key}" "${params.source_lang}" "${params.target_lang}"`, currentmacrodirectory(), "stdio", "utf8");
+    }
     var stdIn = processInfo.stdIn;
     stdIn.write(text);
     stdIn.close();
