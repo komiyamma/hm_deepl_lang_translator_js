@@ -2,4 +2,4 @@
  * This codes is licensed under CC0 1.0 Universal
  */
 
-execmacro currentmacrodirectory + @"\HmDeepLLangTranslator.mac", "en-us", "ja";
+execmacro currentmacrodirectory + @"\HmDeepLLangTranslator.mac", "en", "ja";
