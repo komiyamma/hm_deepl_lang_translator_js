@@ -36,7 +36,7 @@
         ```
 
     -   **Node.jsの場合**
-        `HmDeepLLangTranslator_nodejs.js` があるフォルダで、以下のコマンドを実行してください。（※グローバルインストールは非推奨です）
+        `HmDeepLLangTranslator_nodejs.js` があるフォルダで、以下のコマンドを実行してください。
         ```cmd
         npm install deepl-node
         ```
