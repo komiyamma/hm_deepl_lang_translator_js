@@ -1,6 +1,6 @@
 # HmDeepLLangTranslator
 
-![HmDeepLLangTranslator v1.3.0](https://img.shields.io/badge/HmDeepLLangTranslator-v1.3.0-6479ff.svg) ← ここをバッジに
+![release latest](https://img.shields.io/github/v/release/komiyamma/hm_deepl_lang_translator_js?label=HmDeepLLangTranslator&color=6479ff)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 ![Hidemaru 9.35](https://img.shields.io/badge/Hidemaru-v9.35-6479ff.svg)
 
